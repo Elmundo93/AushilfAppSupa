@@ -5,12 +5,29 @@
     "paths": {
       "@/*": [
         "./*"
+      ],
+      "@/supabaseclient": [
+        "./supabaseclient.ts"
+      ],
+      "@/provider/AuthProvider": [
+        "./src/components/provider/AuthProvider.tsx"
+      ],
+      "@/provider/ProfileProvider": [
+        "./src/components/provider/ProfileProvider.tsx"
+      ],
+      "@/components/": [
+        "./src/components/*"
+      ],
+      "@/assets/": [
+        "./assets/*"
       ]
     }
   },
   "include": [
     "**/*.ts",
     "**/*.tsx",
+    "firebase-auth.d.ts",
+    "declarations.d.ts",
     ".expo/types/**/*.ts",
     "expo-env.d.ts"
   ]
