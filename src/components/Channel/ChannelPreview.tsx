@@ -3,24 +3,9 @@ import { View, Text, StyleSheet, Image, TouchableOpacity } from 'react-native';
 import { Channel as ChannelType } from 'stream-chat';
 import { format } from 'date-fns';
 import * as SecureStore from 'expo-secure-store';
+import { ChannelMetadata, ChannelPreviewProps } from '../../types/stream';
 
-type ChannelMetadata = {
-  postVorname?: string;
-  postNachname?: string;
-  postLocation?: string;
-  postOption?: string;
-  postCategory?: string;
-  userVorname?: string;
-  userNachname?: string;
-  userLocation?: string;
-  userProfilImage?: string;
-  postProfilImage?: string;
-};
 
-type ChannelPreviewProps = {
-  channel: ChannelType;
-  onSelect: (channel: ChannelType) => void;
-};
 
 const ChannelPreview: React.FC<ChannelPreviewProps> = React.memo(({ channel, onSelect }) => {
   const [currentUserId, setCurrentUserId] = useState<string | null>(null);

@@ -3,19 +3,13 @@ import { Text } from 'react-native';
 import {Image} from 'react-native';
 import { createRStyle } from 'react-native-full-responsive';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { CustomCheckboxProps } from '../../types/checkbox';
 
 
 
 
 
 
-
-type CustomCheckboxProps = {
-  label: string;
-  isChecked: boolean;
-  onCheck: () => void;
-  
-};
 
 const CustomCheckbox: React.FC<CustomCheckboxProps> = ({ label, isChecked, onCheck }) => {
 

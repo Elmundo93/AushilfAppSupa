@@ -4,18 +4,12 @@ import { ChannelList } from 'stream-chat-expo';
 import { useRouter } from 'expo-router';
 import { ChannelSort, ChannelFilters, Channel } from 'stream-chat';
 import ChannelPreview from '../../../components/Channel/ChannelPreview';
+import { User } from '../../../types/auth';
 
-
-interface UserData {
-  id: string;
-  vorname: string;
-  nachname: string;
-  streamToken: string;
-}
 
 const ChannelListScreen = () => {
   const router = useRouter();
-  const [user, setUser] = useState<UserData | null>(null);
+  const [user, setUser] = useState<User | null>(null);
 
 
 

@@ -1,19 +1,8 @@
-import { getSupabaseClient } from '../../../../supabaseclient';
+import { getSupabaseClient } from '../../../utils/supabaseclient';
+import { Post } from '../../../types/post';
 
 // Definiere den Typ Post
-type Post = {
-  id: string;
-  category: string;
-  created_at: string;
-  location: string;
-  nachname: string;
-  option: string;
-  postText: string;
-  vorname: string;
-  profileImage: string;
-  userid: string;
-postId: string;
-};
+
 
 // Funktion zum Abrufen der Beiträge
 export const fetchPosts = async (): Promise<Post[]> => {

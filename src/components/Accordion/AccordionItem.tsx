@@ -7,12 +7,8 @@ import {
 } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { createRStyle } from 'react-native-full-responsive';
+import { AccordionItemProps } from '../../types/components';
 
-type AccordionItemProps = PropsWithChildren<{
-  title: string;
-  isExpanded: boolean;
-  onToggle: () => void;
-}>;
 
 function AccordionItem({ children, title, isExpanded, onToggle }: AccordionItemProps): JSX.Element {
   const body = <View style={styles.accordBody}>{children}</View>;

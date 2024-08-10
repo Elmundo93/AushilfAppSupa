@@ -1,45 +1,19 @@
 import * as SecureStore from 'expo-secure-store';
+import { StreamChatData, User } from '../../types/auth';
 
-export interface UserData {
-  id: string;
-  vorname: string;
-  nachname: string;
-  location: string;
-  email: string;
-  profileImage: string;
-}
-interface StreamChatData {
-  token: string;
-  apiKey: string;
-  userId: string;
-}
 
-export async function saveUserData(userData: UserData) {
+
+
+
+
+export async function saveUserData(userData: User) {
   try {
     await SecureStore.setItemAsync('userData', JSON.stringify(userData));
   } catch (error) {
     console.error('Error saving user data:', error);
   }
 }
-
-export async function saveAuthToken(token: string) {
-  try {
-    await SecureStore.setItemAsync('authToken', token);
-  } catch (error) {
-    console.error('Error saving auth token:', error);
-  }
-}
-
-export async function getAuthToken(): Promise<string | null> {
-  try {
-    return await SecureStore.getItemAsync('authToken');
-  } catch (error) {
-    console.error('Error retrieving auth token:', error);
-    return null;
-  }
-}
-
-export async function getUserData(): Promise<UserData | null> {
+export async function getUserData(): Promise<User | null> {
   try {
     const userDataString = await SecureStore.getItemAsync('userData');
     return userDataString ? JSON.parse(userDataString) : null;
@@ -48,7 +22,30 @@ export async function getUserData(): Promise<UserData | null> {
     return null;
   }
 }
+export async function deleteUserData() {
+  try {
+    await SecureStore.deleteItemAsync('userData');
+  } catch (error) {
+    console.error('Error deleting user data:', error);
+  }
+}
 
+
+export async function saveAuthToken(token: string) {
+  try {
+    await SecureStore.setItemAsync('authToken', token);
+  } catch (error) {
+    console.error('Error saving auth token:', error);
+  }
+}
+export async function getAuthToken(): Promise<string | null> {
+  try {
+    return await SecureStore.getItemAsync('authToken');
+  } catch (error) {
+    console.error('Error retrieving auth token:', error);
+    return null;
+  }
+}
 export async function deleteAuthToken() {
   try {
     await SecureStore.deleteItemAsync('authToken');
@@ -57,13 +54,7 @@ export async function deleteAuthToken() {
   }
 }
 
-export async function deleteUserData() {
-  try {
-    await SecureStore.deleteItemAsync('userData');
-  } catch (error) {
-    console.error('Error deleting user data:', error);
-  }
-}
+
 
 export async function saveStreamChatData(apiKey: string, userId: string, token: string) {
   try {
@@ -89,7 +80,6 @@ export async function getStreamChatData(): Promise<StreamChatData | null> {
     return null;
   }
 }
-
 export async function deleteStreamChatData() {
   try {
     await SecureStore.deleteItemAsync('streamChatApiKey');

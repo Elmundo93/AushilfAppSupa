@@ -5,31 +5,9 @@ import { ScrollView } from 'react-native-gesture-handler';
 import ProfileImage from '@/src/components/ProfileImage/PostProfile';
 import * as SecureStore from 'expo-secure-store';
 import { StreamChat } from 'stream-chat';
-
-
-
-
-interface Post {
-  id: string;
-  userId: string;
-  category: string;
-  created_at: string;
-  location: string;
-  nachname: string;
-  option: string;
-  postText: string;
-  vorname: string;
-  profilImage: string;
-}
-
-interface UserDetails {
-  vorname: string;
-  nachname: string;
-  location: string;
-  profilImage: string;
-  id: string;
-}
-
+import { Post } from '../../../types/post';
+import { User } from '../../../types/auth';
+import{ StreamChatService }from '@/src/services/chat/StreamChatService';
 const formatName = (vorname: string, nachname: string) => {
   return `${vorname} ${nachname.charAt(0)}.`;
 };
@@ -48,85 +26,36 @@ export default function PostDetail() {
   const { post } = useLocalSearchParams();
   const postDetails: Post = JSON.parse(post as string);
   const router = useRouter();
-  const [currentUser, setCurrentUser] = useState<UserDetails | null>(null);
+  const [currentUser, setCurrentUser] = useState<User | null>(null);
   const [streamClient, setStreamClient] = useState<StreamChat | null>(null);
 
-  useEffect(() => {
-    const initializeStreamChat = async () => {
-      try {
-        const userDataString = await SecureStore.getItemAsync('userData');
-        if (userDataString) {
-          const userData = JSON.parse(userDataString);
-          setCurrentUser(userData);
+ 
+   
 
-          // Prüfen, ob bereits ein Client existiert
-          if (!streamClient) {
-            const client = new StreamChat('IHRE_GETSTREAM_API_KEY');
-            await client.connectUser(
-              {
-                id: userData.id,
-                name: `${userData.vorname} ${userData.nachname}`,
-                // Fügen Sie hier weitere Benutzerdetails hinzu, falls erforderlich
-              },
-              userData.streamToken
-            );
-            setStreamClient(client);
-          }
+    const handleChatPress = async () => {
+      if (!currentUser) {
+        Alert.alert('Fehler', 'Bitte melden Sie sich an, um eine Nachricht zu senden.');
+        return;
+      }
+  
+      try {
+        const streamChatService = StreamChatService.getInstance();
+        const channelId = await streamChatService.handleChatPress(currentUser, postDetails);
+        
+        if (channelId) {
+          router.push({
+            pathname: '/nachrichten/channel/[cid]' as never,
+            params: { cid: channelId }
+          });
         }
       } catch (error) {
-        console.error('Fehler beim Initialisieren des StreamChat:', error);
-        Alert.alert('Fehler', 'Beim Laden der Chat-Daten ist ein Fehler aufgetreten.');
+        if (error instanceof Error) {
+          Alert.alert('Fehler', error.message);
+        } else {
+          Alert.alert('Fehler', 'Ein unbekannter Fehler ist aufgetreten.');
+        }
       }
     };
-
-    initializeStreamChat();
-
-    // Kein Cleanup mehr nötig
-  }, []);
-
-  const handleChatPress = async () => {
-    if (!currentUser) {
-      Alert.alert('Fehler', 'Bitte melden Sie sich an, um eine Nachricht zu senden.');
-      return;
-    }
-  
-    if (!streamClient) {
-      Alert.alert('Fehler', 'Chat-Client konnte nicht initialisiert werden. Bitte versuchen Sie es später erneut.');
-      return;
-    }
-  
-    try {
-      const channelId = `${currentUser.id}_${postDetails.userId}_${Date.now()}`;
-      const channel = streamClient.channel('messaging', channelId, {
-        members: [currentUser.id, postDetails.userId],
-        created_by: {
-          id: currentUser.id,
-          name: `${currentUser.vorname} ${currentUser.nachname}`,
-          // Fügen Sie hier weitere relevante Informationen hinzu
-        },
-        postVorname: postDetails.vorname,
-        postNachname: postDetails.nachname,
-        postLocation: postDetails.location,
-        postOption: postDetails.option,
-        postCategory: postDetails.category,
-        userVorname: currentUser.vorname,
-        userNachname: currentUser.nachname,
-        userLocation: currentUser.location,
-        userProfilImage: currentUser.profilImage,
-        postProfilImage: postDetails.profilImage,
-      });
-  
-      await channel.create();
-  
-      router.push({
-        pathname: '/nachrichten/channel/[cid]' as never,
-        params: { cid: channelId }
-      });
-    } catch (error) {
-      console.error('Fehler beim Starten des Chats:', error);
-      Alert.alert('Fehler', 'Fehler beim Starten des Chats. Bitte versuchen Sie es später erneut.');
-    }
-  };
 
   return (
     <ScrollView style={styles.container}>
@@ -135,7 +64,7 @@ export default function PostDetail() {
       <Text style={styles.headerText}>
           {formatName(postDetails.vorname, postDetails.nachname)}
         </Text>
-        <ProfileImage imageUrl={postDetails.profilImage} />
+        <ProfileImage imageUrl={postDetails.userProfileImage} />
         </View>
         <Text style={styles.headerText}>
           

@@ -1,16 +1,14 @@
 import React from 'react';
 import { KeyboardAvoidingView, View } from 'react-native';
-import CustomCheckbox from '../Checkboxes/CustomCheckboxPost';
+import CustomCheckbox from '../CustomCheckboxPost';
 import { useState } from 'react';
 import { createRStyle } from 'react-native-full-responsive';
 import { Text } from 'react-native';
 import { TouchableOpacity } from 'react-native-gesture-handler';
+import { PostFiltersProps } from '../../../types/checkbox';
 
 
-interface PostFiltersProps {
-    onOptionChange: (option: string) => void;
-    onCategoryChange: (category: string) => void;
-  }
+
   
 
 const PostFilters: React.FC<PostFiltersProps>  = ({ onOptionChange, onCategoryChange }) => {

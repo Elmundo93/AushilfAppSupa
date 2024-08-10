@@ -1,12 +1,12 @@
 import React, { useState } from 'react';
 import { View, TextInput, Text, Platform, KeyboardAvoidingView } from 'react-native';
-import PostFilters from '../../CheckboxGroups/PostFilters';
+import PostFilters from '../../Checkboxes/CheckboxGroups/PostFilters';
 import { createRStyle } from 'react-native-full-responsive';
 import { router } from 'expo-router';
 import { ScrollView, TouchableOpacity } from 'react-native-gesture-handler';
-import { getSupabaseClient } from '../../../../supabaseclient';
-import { getUserData } from '../AuthHelpers';
-import { useRef } from 'react';
+import { getSupabaseClient } from '../../../utils/supabaseclient';
+import { getUserData } from '../../../services/auth/AuthStoreHelpers';
+
 import { usePostStore } from '../../../../src/stores/postStores';
 
 

@@ -1,10 +1,10 @@
 import { Stack } from 'expo-router';
 
-export default function PinnwandLayout() {
+export default function RegisterLayout() {
   return (
     <Stack>
       <Stack.Screen
-        name="index"
+        name="(register)"
         options={{
           headerShown: false,
           title: 'Pinnwand',
