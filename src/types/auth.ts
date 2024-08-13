@@ -9,8 +9,8 @@ export interface User {
   created_at: string;
   location: string;
   bio: string;
-  profileImage: string;
-  coverImage: string;
+  profileImageUrl: string;
+  coverImageUrl: string;
 
   // Weitere Benutzerfelder hier
 }

@@ -15,9 +15,5 @@ export type Post = {
   userCoverImage: string;
   };
 
- export interface Danksagung {
-    id: string;
-    text: string;
-    author: string;
-  }
+ 
  

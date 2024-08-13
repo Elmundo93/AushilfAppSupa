@@ -1,33 +1,31 @@
 import React, { useState } from 'react';
-import { View, Text, TextInput, FlatList } from 'react-native';
+import { View, Text, FlatList } from 'react-native';
 import ProfileAvatar from '../../../components/ProfileImage/ProfileAvatar';
 import { useLocalSearchParams } from 'expo-router';
-import { Danksagung } from '../../../types/post';
+import { Danksagung } from '../../../types/Danksagungen';
 import { createRStyle } from 'react-native-full-responsive';
 import LottieView from 'lottie-react-native';
-import { TouchableOpacity } from 'react-native';
 import { useProfileData } from '../../../hooks/useProfileData';
+import CreateDanksagung from '../../../components/Cruid/Danksagungen/createDanksagung';
+import { useFetchDanksagungen } from '../../../components/Cruid/Danksagungen/fetchDanksagung';
+import { useDanksagungStore } from '../../../stores/danksagungStores';
 
 const UserProfile: React.FC = () => {
   const { userid, post } = useLocalSearchParams();
-  const { user, loading, error } = useProfileData(userid as string, post as string);
-  const [newDanksagung, setNewDanksagung] = useState('');
+  const userId = userid as string;
+  const { user, loading: userLoading, error: userError } = useProfileData(userId as string, post as string);
+  const { danksagungen, loading: danksagungenLoading, error: danksagungenError } = useFetchDanksagungen(userid as string);
+  const danksagungCount = useDanksagungStore(state => state.danksagungCount);
 
-  const [danksagungen, setDanksagungen] = useState<Danksagung[]>([
-    { id: '1', text: 'Vielen Dank für deine Hilfe!', author: 'Max Mustermann' },
-    { id: '2', text: 'Du bist ein echter Lebensretter!', author: 'Anna Schmidt' },
-    { id: '3', text: 'Deine Unterstützung bedeutet mir sehr viel.', author: 'Lisa Meyer' },
-    { id: '4', text: 'Danke für dein Engagement in der Gemeinschaft!', author: 'Tom Schulz' },
-    { id: '5', text: 'Du machst einen tollen Job!', author: 'Sarah Wagner' },
-  ]);
+ 
 
   const formatName = (vorname: string, nachname: string) => 
     `${vorname} ${nachname.charAt(0)}.`;
 
   const renderDanksagung = ({ item }: { item: Danksagung }) => (
     <View style={styles.danksagungCard}>
-      <Text style={styles.danksagungText}>{item.text}</Text>
-      <Text style={styles.danksagungAuthor}>- {item.author}</Text>
+      <Text style={styles.danksagungText}>{item.writtenText}</Text>
+      <Text style={styles.danksagungAuthor}>- {formatName(item.vorname, item.nachname)}</Text>
     </View>
   );
 
@@ -47,18 +45,11 @@ const UserProfile: React.FC = () => {
         <Text style={styles.danksagungenTitle}>Danksagungen</Text>
       </View>
 
-      <View style={styles.inputCard}>
-        <TextInput
-          style={styles.input}
-          placeholder="Schreibe eine Danksagung..."
-          value={newDanksagung}
-          onChangeText={setNewDanksagung}
-          multiline
-        />
-      </View>
-      <TouchableOpacity style={styles.button} onPress={() => alert('Danksagung abgeschickt!')}>
-        <Text style={styles.buttonText}>Abschicken</Text>
-      </TouchableOpacity>
+      <CreateDanksagung 
+        userId={userId} 
+
+      />
+
       <View style={styles.lottieContainer}>
         <LottieView
           source={require('@/assets/animations/SpinnigGreenArrow.json')}
@@ -76,12 +67,12 @@ const UserProfile: React.FC = () => {
     </View>
   );
 
-  if (loading) {
-    return <Text>Lade Benutzerprofil...</Text>;
+  if (userLoading || danksagungenLoading) {
+    return <Text>Lade Daten...</Text>;
   }
 
-  if (error) {
-    return <Text>Fehler beim Laden des Profils: {error}</Text>;
+  if (userError || danksagungenError) {
+    return <Text>Fehler beim Laden der Daten: {userError || danksagungenError}</Text>;
   }
 
   if (!user) {
@@ -97,16 +88,15 @@ const UserProfile: React.FC = () => {
         keyExtractor={(item) => item.id}
         style={styles.danksagungList}
         ListEmptyComponent={
-          <View style={{borderWidth:1,borderRadius:25, backgroundColor:'green', justifyContent:'center', alignContent:'center', margin:25, padding:20}}>
-            <Text style={{color:'white', alignSelf:'center', fontSize:30}}>Kein Eintrag für diese Kategorie gefunden 🤷</Text>
-            <Text style={{color:'white', alignSelf:'center', fontSize:30, marginTop:20}}>Bitte wähle einen anderen Filter!✌️</Text>
+          <View style={styles.emptyListContainer}>
+            <Text style={styles.emptyListText}>Keine Danksagungen für diesen Benutzer gefunden.</Text>
           </View>
         }
+        extraData={danksagungCount} // Fügen Sie dies hinzu, um die Liste bei Änderungen neu zu rendern
       />
     </View>
   );
 };
-
 const styles = createRStyle({
   container: {
     flex: 1,
@@ -145,17 +135,6 @@ const styles = createRStyle({
   userBio: {
     fontSize: 16,
   },
-  inputCard: {
-    marginBottom: 16,
-  },
-  input: {
-    padding: 8,
-    borderWidth: 1,
-    borderColor: 'gray',
-    borderRadius: 55,
-    width: '300rs',
-    alignSelf: 'center',
-  },
   lottieContainer: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -188,19 +167,6 @@ const styles = createRStyle({
   header: {
     marginBottom: 20,
   },
-
-  button: {
-    backgroundColor: 'green',
-    borderRadius: 5,
-    padding: 12,
-    alignItems: 'center',
-    marginTop: 10,
-  },
-  buttonText: {
-    color: 'white',
-    fontSize: 16,
-    fontWeight: 'bold',
-  },
   danksagungenHeader: {
     marginBottom: 16,
     alignItems: 'center',
@@ -212,12 +178,21 @@ const styles = createRStyle({
     marginBottom: 8,
     letterSpacing: 2,
   },
-  danksagungenUnderline: {
-    height: 2,
-    width: '80rs',
-    backgroundColor: '#007AFF',
+  emptyListContainer: {
+    borderWidth: 1,
+    borderRadius: 25,
+    backgroundColor: 'green',
+    justifyContent: 'center',
+    alignContent: 'center',
+    margin: 25,
+    padding: 20,
   },
-
+  emptyListText: {
+    color: 'white',
+    alignSelf: 'center',
+    fontSize: 20,
+    textAlign: 'center',
+  },
 });
 
 export default UserProfile;

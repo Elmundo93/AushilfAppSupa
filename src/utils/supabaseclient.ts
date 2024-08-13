@@ -1,6 +1,7 @@
 import { createClient, SupabaseClient } from '@supabase/supabase-js';
-import { SUPABASE_URL, SUPABASE_KEY } from '@env';
+
 import { SessionService } from '../services/auth/SessionService';
+import env from '../../env';
 
 let supabaseInstance: SupabaseClient | null = null;
 
@@ -10,8 +11,8 @@ export const initializeSupabase = async (): Promise<void> => {
   const sessionService = SessionService.getInstance();
 
   supabaseInstance = createClient(
-    SUPABASE_URL,
-    SUPABASE_KEY,
+    env.supabaseUrl,
+    env.supabaseKey,
     {
       auth: {
         storage: {

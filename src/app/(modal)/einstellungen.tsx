@@ -1,18 +1,21 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, ActivityIndicator } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { router } from 'expo-router';
 import ProfileAvatar from '@/src/components/ProfileImage/ProfileAvatar';
+import { useProfileImagePicker } from '@/src/components/Cruid/Profile/ProfileImagPicker';
+import { User } from '@/src/types/auth';
 
 const EinstellungenPage: React.FC = () => {
-  const [user, setUser] = useState<any>(null);
+  const [user, setUser] = useState<User | null>(null);
+  const { pickImage, profileImageUrl, isUploading } = useProfileImagePicker();
 
   useEffect(() => {
     const loadUser = async () => {
       try {
         const userString = await AsyncStorage.getItem('currentUser');
         if (userString) {
-          setUser(JSON.parse(userString));
+          setUser(JSON.parse(userString) as User);
         }
       } catch (error) {
         console.error('Fehler beim Laden der Benutzerdaten:', error);
@@ -21,6 +24,12 @@ const EinstellungenPage: React.FC = () => {
 
     loadUser();
   }, []);
+
+  useEffect(() => {
+    if (profileImageUrl && user) {
+      setUser({ ...user, profileImageUrl });
+    }
+  }, [profileImageUrl]);
 
   const handleLogout = async () => {
     try {
@@ -37,20 +46,19 @@ const EinstellungenPage: React.FC = () => {
 
   return (
     <View style={styles.container}>
-      <ProfileAvatar />
-      <Text style={styles.header}>Nutzerdaten</Text>
-      <View style={styles.card}>
-        <Text style={styles.cardText}>Name: {user.vorname} {user.nachname}</Text>
-        <Text style={styles.cardText}>E-Mail: {user.email}</Text>
-        <Text style={styles.cardText}>Standort: {user.location}</Text>
-      </View>
-      <TouchableOpacity style={styles.button} onPress={handleLogout}>
-        <Text style={styles.buttonText}>Logout</Text>
+      <TouchableOpacity onPress={pickImage} disabled={isUploading}>
+        {isUploading ? (
+          <View style={styles.avatarContainer}>
+            <ActivityIndicator size="large" color="#0000ff" />
+          </View>
+        ) : (
+          <ProfileAvatar imageUri={user.profileImageUrl} />
+        )}
       </TouchableOpacity>
+      {/* ... Rest des JSX bleibt unverändert ... */}
     </View>
   );
 };
-
 const styles = StyleSheet.create({
   container: {
     flex: 1,
@@ -90,6 +98,14 @@ const styles = StyleSheet.create({
     color: 'white',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  avatarContainer: {
+    width: 100,
+    height: 100,
+    borderRadius: 50,
+    justifyContent: 'center',
+    alignItems: 'center',
+    backgroundColor: '#f0f0f0',
   },
 });
 

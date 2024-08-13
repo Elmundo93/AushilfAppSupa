@@ -3,12 +3,13 @@ import { Image, StyleSheet, ImageStyle } from 'react-native';
 
 interface ProfileAvatarProps {
   style?: ImageStyle;
+  imageUri?: string;
 }
 
-const ProfileAvatar: React.FC<ProfileAvatarProps> = ({ style }) => {
+const ProfileAvatar: React.FC<ProfileAvatarProps> = ({ style, imageUri }) => {
   return (
     <Image
-      source={require('../../../assets/images/bienenlogo.png')}
+      source={imageUri ? { uri: imageUri } : require('../../../assets/images/bienenlogo.png')}
       style={[styles.avatar, style]}
     />
   );

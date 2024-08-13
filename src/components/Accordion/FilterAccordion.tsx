@@ -2,20 +2,9 @@ import React from 'react';
 import { View, Text, TouchableOpacity } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { createRStyle } from 'react-native-full-responsive';
+import { FilterAccordionProps } from '../../types/components';
 
-interface FilterAccordionProps {
-  isExpanded: boolean;
-  onToggle: () => void;
-  renderCheckbox: (label: string, isChecked: boolean, onCheck: () => void) => React.ReactNode;
-  suchenChecked: boolean;
-  bietenChecked: boolean;
-  gartenChecked: boolean;
-  haushaltChecked: boolean;
-  sozialesChecked: boolean;
-  gastroChecked: boolean;
-  handleSuchenBietenChange: (option: string) => void;
-  handleCategoryChange: (category: string) => void;
-}
+
 
 const FilterAccordion: React.FC<FilterAccordionProps> = React.memo(({
   isExpanded,

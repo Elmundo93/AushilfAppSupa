@@ -4,11 +4,11 @@
     "slug": "aushilfappsupa",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/images/icon.png",
+    "icon": "./assets/images/bienenlogo.png",
     "scheme": "myapp",
     "userInterfaceStyle": "automatic",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/animations/LoadingWarp.json",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -18,7 +18,7 @@
     },
     "android": {
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
+        "foregroundImage": "./assets/images/bienenlogo.png",
         "backgroundColor": "#ffffff"
       },
       "package": "com.wirhelfenausev.aushilfapp",
@@ -37,11 +37,15 @@
     "web": {
       "bundler": "metro",
       "output": "static",
-      "favicon": "./assets/images/favicon.png"
+      "favicon": "./assets/images/bienenlogo.png"
     },
     "plugins": [
       "expo-router",
-      "expo-font"
+      "expo-font",
+      ["expo-image-picker",
+      {
+        "photosPermission": "Erlauben Sie der App den Zugriff auf Ihre Fotos, um ein Profilbild auszuwählen."
+      }]
     ],
     "experiments": {
       "typedRoutes": true

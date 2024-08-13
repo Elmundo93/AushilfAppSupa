@@ -2,33 +2,37 @@ import React from 'react';
 import { View } from 'react-native';
 import FilterAccordion from '../Accordion/FilterAccordion';
 import { createRStyle } from 'react-native-full-responsive';
-
-interface FilterSectionProps {
-  selectedOption: string;
-  selectedCategory: string;
-  selectedLocation: string;
-  handleOptionChange: (option: string) => void;
-  handleCategoryChange: (category: string) => void;
-  handleLocationChange: (location: string) => void;
-}
+import { FilterSectionProps } from '../../types/components';
 
 const FilterSection: React.FC<FilterSectionProps> = ({
-  selectedOption,
-  selectedCategory,
-  selectedLocation,
-  handleOptionChange,
-  handleCategoryChange,
-  handleLocationChange,
+  option,
+  category,
+  location,
+  onOptionChange,
+  onCategoryChange,
+  onLocationChange,
 }) => {
   return (
     <View style={styles.filterContainer}>
       <FilterAccordion
-        selectedOption={selectedOption}
-        selectedCategory={selectedCategory}
-        selectedLocation={selectedLocation}
-        onOptionChange={handleOptionChange}
-        onCategoryChange={handleCategoryChange}
-        onLocationChange={handleLocationChange}
+        option={option}
+        category={category}
+        location={location}
+        onOptionChange={onOptionChange}
+        onCategoryChange={onCategoryChange}
+        onLocationChange={onLocationChange}
+
+        isExpanded={false} 
+        onToggle={() => {}} 
+        renderCheckbox={() => null} 
+        suchenChecked={false} 
+        bietenChecked={false} 
+        gartenChecked={false} 
+        haushaltChecked={false} 
+        sozialesChecked={false} 
+        gastroChecked={false} 
+        handleSuchenBietenChange={() => {}} 
+        handleCategoryChange={() => {}} 
       />
     </View>
   );
